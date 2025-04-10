@@ -1,71 +1,63 @@
 from rest_framework import serializers
-from .models import CustomUser, Equipment
+from .models import WORKER_SPECIALIZATIONS, CustomUser 
 from django.contrib.auth import get_user_model  
- 
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
 class CustomRegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     password_confirmation = serializers.CharField(write_only=True)
     first_name = serializers.CharField(required=True)
     last_name = serializers.CharField(required=True)
     profile_image = serializers.ImageField(required=True)
+    worker_specialization = serializers.ChoiceField(
+        choices=WORKER_SPECIALIZATIONS, required=False, allow_blank=True
+    )
 
     class Meta:
         model = get_user_model()
-        fields = [ 'first_name', 'last_name','email',  'phone','governorate','city','user_type',  'profile_image','password', 'password_confirmation' ]
-    
+        fields = [
+            'first_name', 'last_name', 'email', 'phone', 'governorate', 'city',
+            'user_type', 'worker_specialization', 'profile_image', 'password', 'password_confirmation'
+        ]
+
     def validate(self, attrs):
-        # تحقق من تطابق كلمة المرور
         if attrs['password'] != attrs['password_confirmation']:
             raise serializers.ValidationError("Passwords must match")
-        
-        # حذف password_confirmation لأنها ليست جزءًا من الموديل
+
+        if attrs['user_type'] == 'worker' and not attrs.get('worker_specialization'):
+            raise serializers.ValidationError("يجب اختيار نوع العامل")
+
         attrs.pop('password_confirmation')
         return attrs
 
     def create(self, validated_data):
-        # استخراج كلمة المرور
         password = validated_data.pop('password')
-        # إنشاء المستخدم
         user = get_user_model().objects.create_user(**validated_data)
-        # تعيين كلمة السر بشكل آمن
         user.set_password(password)
         user.save()
         return user
 
 
-
-
-class EquipmentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Equipment
-        fields = '__all__'
-
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework import serializers
-  
-
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
-    email = serializers.EmailField()  # إضافة حقل الإيميل
-    password = serializers.CharField(write_only=True)  # حقل الباسورد
+    email = serializers.EmailField()  
+    password = serializers.CharField(write_only=True)   
 
     def validate(self, attrs):
         User = get_user_model()
 
         try:
-            # البحث عن المستخدم باستخدام الإيميل
+        
             user = User.objects.get(email=attrs['email'])
         except User.DoesNotExist:
             raise serializers.ValidationError("البريد الإلكتروني غير مسجل")
 
-        # التحقق من كلمة السر
         if not user.check_password(attrs['password']):
             raise serializers.ValidationError("كلمة السر غير صحيحة")
-        
-        # إضافة user_type في attrs ليكون متاحًا في validated_data
+
         attrs['user'] = user
-        attrs['user_type'] = user.user_type  # إضافة user_type في attrs
+        attrs['user_type'] = user.user_type  
         
-        return attrs  # لازم نرجع attrs بعد التحقق
+        return attrs  
 
     @classmethod
     def get_token(cls, user):
@@ -73,3 +65,11 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['user_type'] = user.user_type
         token['email'] = user.email
         return token
+
+
+from rest_framework import serializers
+from .models import CustomUser
+class CustomUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser 
+        fields = ('first_name', 'last_name',   'governorate', 'city',  'worker_specialization', 'profile_image')

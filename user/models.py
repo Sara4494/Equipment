@@ -21,32 +21,41 @@ USER_TYPES = [
     ('worker', 'عامل'),
     ('contractor', 'مقاول'),
     ('equipment_owner', 'صاحب معدات'),
-    ('material_supplier', 'مورد مواد بناء'),
+ 
+]
+WORKER_SPECIALIZATIONS = [
+    ('plumbing', 'عامل سباكة'),
+    ('carpentry', 'عامل نجارة'),
+    ('blacksmith', 'عامل حدادة'),
+    ('electrician', 'عامل كهرباء'),
+    ('plaster', 'عامل محارة'),
+    ('painter', 'عامل نقاشة'),
 ]
 
 class CustomUser(AbstractUser):
+    username = None
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=15)
     governorate = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
     user_type = models.CharField(max_length=20, choices=USER_TYPES)
+    worker_specialization = models.CharField(
+        max_length=20, choices=WORKER_SPECIALIZATIONS, blank=True, null=True
+    )
     profile_image = models.ImageField(upload_to='profiles/', blank=True, null=True)
     first_name = models.CharField(max_length=100, blank=True)
     last_name = models.CharField(max_length=100, blank=True)
+
     objects = CustomUserManager()
-    USERNAME_FIELD = 'email'  # التأكيد أن 'email' هو الحقل المستخدم كاسم المستخدم
-    REQUIRED_FIELDS = []  # لا يتم تضمين 'username'
+    
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
 
     def __str__(self):
         return self.email
 
 
+
     
-
-class Equipment(models.Model):
-    owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, limit_choices_to={'user_type': 'equipment_owner'})
-    name = models.CharField(max_length=100)
-    description = models.TextField()
-    image = models.ImageField(upload_to='equipment/')
-
+ 
  
