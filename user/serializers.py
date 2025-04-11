@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from .models import WORKER_SPECIALIZATIONS, CustomUser 
 from django.contrib.auth import get_user_model  
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework.authtoken.models import Token
+
 
 class CustomRegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -12,12 +13,13 @@ class CustomRegisterSerializer(serializers.ModelSerializer):
     worker_specialization = serializers.ChoiceField(
         choices=WORKER_SPECIALIZATIONS, required=False, allow_blank=True
     )
+    price = serializers.DecimalField(max_digits=10, decimal_places=2, required=False, allow_null=True)  # السعر هنا
 
     class Meta:
         model = get_user_model()
         fields = [
             'first_name', 'last_name', 'email', 'phone', 'governorate', 'city',
-            'user_type', 'worker_specialization', 'profile_image', 'password', 'password_confirmation'
+            'user_type', 'worker_specialization', 'profile_image', 'password', 'password_confirmation', 'price'
         ]
 
     def validate(self, attrs):
@@ -37,27 +39,35 @@ class CustomRegisterSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
+ 
 
-class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
-    email = serializers.EmailField()  
-    password = serializers.CharField(write_only=True)   
+User = get_user_model()
+
+class CustomTokenObtainPairSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)
 
     def validate(self, attrs):
-        User = get_user_model()
+        email = attrs.get('email')
+        password = attrs.get('password')
 
         try:
-        
-            user = User.objects.get(email=attrs['email'])
+            user = User.objects.get(email=email)
         except User.DoesNotExist:
-            raise serializers.ValidationError("البريد الإلكتروني غير مسجل")
+            raise serializers.ValidationError("Invalid email or password")
 
-        if not user.check_password(attrs['password']):
-            raise serializers.ValidationError("كلمة السر غير صحيحة")
+        if not user.check_password(password):
+            raise serializers.ValidationError("Invalid email or password")
 
-        attrs['user'] = user
-        attrs['user_type'] = user.user_type  
-        
-        return attrs  
+        token, _ = Token.objects.get_or_create(user=user)
+
+        return {
+            'token': token.key,
+            'user_type': user.user_type,
+            'email': user.email,
+
+           
+        }
 
     @classmethod
     def get_token(cls, user):
@@ -66,10 +76,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['email'] = user.email
         return token
 
-
-from rest_framework import serializers
-from .models import CustomUser
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser 
-        fields = ('first_name', 'last_name',   'governorate', 'city',  'worker_specialization', 'profile_image')
+        fields = ('first_name', 'last_name', 'price',  'governorate', 'city',  'worker_specialization', 'profile_image')

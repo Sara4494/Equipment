@@ -6,7 +6,5 @@ urlpatterns = [
     path('login/', CustomLoginView.as_view(), name='custom_login'),
      path('profile-image/', ProfileImageView.as_view(), name='profile-image'),    
      path('workers/', WorkerListView.as_view(), name='worker-list'),
-              
-  
-  
+               
 ]

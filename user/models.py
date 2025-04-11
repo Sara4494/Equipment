@@ -31,7 +31,6 @@ WORKER_SPECIALIZATIONS = [
     ('plaster', 'عامل محارة'),
     ('painter', 'عامل نقاشة'),
 ]
-
 class CustomUser(AbstractUser):
     username = None
     email = models.EmailField(unique=True)
@@ -45,15 +44,15 @@ class CustomUser(AbstractUser):
     profile_image = models.ImageField(upload_to='profiles/', blank=True, null=True)
     first_name = models.CharField(max_length=100, blank=True)
     last_name = models.CharField(max_length=100, blank=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)  
 
     objects = CustomUserManager()
-    
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
     def __str__(self):
         return self.email
-
 
 
     
