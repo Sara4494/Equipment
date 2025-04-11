@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.contrib.auth.models import BaseUserManager
+
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -23,6 +24,7 @@ USER_TYPES = [
     ('equipment_owner', 'صاحب معدات'),
  
 ]
+
 WORKER_SPECIALIZATIONS = [
     ('plumbing', 'عامل سباكة'),
     ('carpentry', 'عامل نجارة'),
@@ -30,7 +32,12 @@ WORKER_SPECIALIZATIONS = [
     ('electrician', 'عامل كهرباء'),
     ('plaster', 'عامل محارة'),
     ('painter', 'عامل نقاشة'),
+    ('general', 'عامل عام'),
+    ('winch', 'عامل ونش'),
+    ('Ceramic', 'عامل سرميك'),
 ]
+
+
 class CustomUser(AbstractUser):
     username = None
     email = models.EmailField(unique=True)

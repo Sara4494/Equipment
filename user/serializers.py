@@ -3,7 +3,6 @@ from .models import WORKER_SPECIALIZATIONS, CustomUser
 from django.contrib.auth import get_user_model  
 from rest_framework.authtoken.models import Token
 
-
 class CustomRegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     password_confirmation = serializers.CharField(write_only=True)
@@ -38,8 +37,6 @@ class CustomRegisterSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         return user
-
- 
 
 User = get_user_model()
 
