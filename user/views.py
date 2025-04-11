@@ -51,19 +51,21 @@ class ProfileImageView(APIView):
             return Response({"profile_image": user.profile_image.url})
         return Response({"error": "No profile image found"}, status=404)
     
+from django.templatetags.static import static
+
 class SpecializationsView(APIView):
     def get(self, request):
         # Creating a dictionary of specializations with icons
         specialization_icons = {
-            'plumbing': '/static/icons/icon-2.svg',
-            'carpentry': '/static/icons/icon-1.svg',
-            'blacksmith': '/static/icons/icon-3.svg',
-            'electrician': '/static/icons/icon-5.svg',
-            'plaster': '/static/icons/icon-4.svg',
-            'painter': '/static/icons/icon-7.svg',
-            'general': '/static/icons/icon-6.svg',
-            'winch': '/static/icons/icon-8.svg',
-            'Ceramic': '/static/icons/icon-9.svg',
+            'plumbing': static('icons/icon-2.svg'),
+            'carpentry': static('icons/icon-1.svg'),
+            'blacksmith': static('icons/icon-3.svg'),
+            'electrician': static('icons/icon-5.svg'),
+            'plaster': static('icons/icon-4.svg'),
+            'painter': static('icons/icon-7.svg'),
+            'general': static('icons/icon-6.svg'),
+            'winch': static('icons/icon-8.svg'),
+            'Ceramic': static('icons/icon-9.svg'),
         }
 
         # Preparing the data by adding icons
@@ -71,13 +73,12 @@ class SpecializationsView(APIView):
             {
                 'key': key,
                 'name': name,
-                'icon': specialization_icons.get(key, '/static/icons/default-icon.svg')  # Provide default icon if not found
+                'icon': specialization_icons.get(key, static('icons/default-icon.svg'))  # Provide default icon if not found
             }
             for key, name in WORKER_SPECIALIZATIONS
         ]
         
         return Response(data)
-    
 class WorkerListView(APIView):
     def get(self, request):
         specialization = request.query_params.get('specialization')  # مثلاً 'plumbing'
