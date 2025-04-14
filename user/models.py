@@ -21,6 +21,7 @@ class CustomUserManager(BaseUserManager):
 USER_TYPES = [
     ('worker', 'عامل'),
     ('contractor', 'مقاول'),
+    ('construction_owner', 'مواد  بناء'),
     ('equipment_owner', 'صاحب معدات'),
  
 ]

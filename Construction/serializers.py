@@ -9,4 +9,4 @@ class CategoryConstructionSerializer(serializers.ModelSerializer):
 class ConstructionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Construction
-        fields = ['id', 'name', 'price', 'description', 'image', 'category']
+        fields = ['id',  'price', 'description', 'image', 'category']
