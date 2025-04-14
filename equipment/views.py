@@ -3,7 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Equipment ,CategoryEquipment
-from .serializers import EquipmentSerializer ,CategoryEquipmentSerializer 
+from .serializers import EquipmentSerializer ,CategoryEquipmentSerializer
 
 
 
@@ -12,7 +12,7 @@ class CategoryListAPIView(APIView):
         categories = CategoryEquipment.objects.all()
         serializer = CategoryEquipmentSerializer(categories, many=True)
         return Response(serializer.data)
-    
+
 
 
 from rest_framework.generics import ListAPIView
@@ -21,9 +21,7 @@ class EquipmentByCategoryAPIView(ListAPIView):
     serializer_class = EquipmentSerializer
 
     def get_queryset(self):
-        category_id = self.kwargs['category_id']
-        return Equipment.objects.filter(category_id=category_id)
-
+        return Equipment.objects.all()
 
 
 class EquipmentCreateAPIView(APIView):

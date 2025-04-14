@@ -24,8 +24,7 @@ SECRET_KEY = 'django-insecure-sec5o^$flh9i2-9nacj*o2ljwsnzw&gq9a&a-#x!kweukb@(n(
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-
-ALLOWED_HOSTS = ['sara545.pythonanywhere.com']
+ALLOWED_HOSTS = ['sara545.pythonanywhere.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -37,13 +36,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+     'corsheaders',
     'user',
     'rest_framework',
     'rest_framework.authtoken',
     'equipment',
     'Construction'
- 
+
 ]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+]
+
 AUTH_USER_MODEL = 'user.CustomUser'
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
@@ -59,11 +64,13 @@ REST_FRAMEWORK = {
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -133,6 +140,8 @@ import os
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

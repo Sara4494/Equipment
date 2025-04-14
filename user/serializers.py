@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from .models import WORKER_SPECIALIZATIONS, CustomUser 
-from django.contrib.auth import get_user_model  
+from .models import WORKER_SPECIALIZATIONS, CustomUser
+from django.contrib.auth import get_user_model
 from rest_framework.authtoken.models import Token
 
 class CustomRegisterSerializer(serializers.ModelSerializer):
@@ -63,7 +63,7 @@ class CustomTokenObtainPairSerializer(serializers.Serializer):
             'user_type': user.user_type,
             'email': user.email,
 
-           
+
         }
 
     @classmethod
@@ -72,8 +72,20 @@ class CustomTokenObtainPairSerializer(serializers.Serializer):
         token['user_type'] = user.user_type
         token['email'] = user.email
         return token
-
 class CustomUserSerializer(serializers.ModelSerializer):
+    worker_specialization = serializers.SerializerMethodField()
+
     class Meta:
-        model = CustomUser 
-        fields = ('first_name', 'last_name', 'price',  'governorate', 'city',  'worker_specialization', 'profile_image')
+        model = CustomUser
+        fields = (
+            'first_name',
+            'last_name',
+            'price',
+            'governorate',
+            'city',
+            'worker_specialization',
+            'profile_image',
+        )
+
+    def get_worker_specialization(self, obj):
+        return obj.get_worker_specialization_display()
