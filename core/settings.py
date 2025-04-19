@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-sec5o^$flh9i2-9nacj*o2ljwsnzw&gq9a&a-#x!kweukb@(n(
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-ALLOWED_HOSTS = ['sara545.pythonanywhere.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['sara545.pythonanywhere.com', 'meqawalte.vercel.app','localhost', '127.0.0.1']
 
 
 # Application definition
@@ -48,6 +48,7 @@ INSTALLED_APPS = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
+    "https://meqawalte.vercel.app"
 ]
 
 AUTH_USER_MODEL = 'user.CustomUser'

@@ -1,6 +1,6 @@
 from django.db import models
 from user.models import CustomUser
-
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 class CategoryEquipment(models.Model):
     name = models.CharField(max_length=100)
@@ -16,5 +16,11 @@ class Equipment(models.Model):
     description = models.TextField()
     image = models.ImageField(upload_to='equipment/')
     category = models.ForeignKey(CategoryEquipment, on_delete=models.CASCADE)
+    rating = models.IntegerField(
+        null=True, blank=True,
+        validators=[MinValueValidator(1), MaxValueValidator(5)],
+        help_text="قيم من 1 إلى 5"
+    )
+
 
 
