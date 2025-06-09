@@ -72,6 +72,7 @@ class CustomTokenObtainPairSerializer(serializers.Serializer):
         token['user_type'] = user.user_type
         token['email'] = user.email
         return token
+    
 class CustomUserSerializer(serializers.ModelSerializer):
     worker_specialization = serializers.SerializerMethodField()
 
@@ -86,6 +87,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
             'city',
             'worker_specialization',
             'profile_image',
+            'phone'
         )
 
     def get_worker_specialization(self, obj):
